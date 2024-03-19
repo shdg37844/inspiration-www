@@ -30,9 +30,8 @@ import BasicLayoutHeader from './BasicLayoutHeader.vue'
   display: flex;
   flex-direction: column;
   .page-body {
+    display: flex;
     flex: 1;
-    margin:8px;
-    //padding: 8px;
     height: 1px;
     background-color: #fff;
   }

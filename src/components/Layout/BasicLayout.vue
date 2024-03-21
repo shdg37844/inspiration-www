@@ -23,6 +23,7 @@ import BasicLayoutHeader from './BasicLayoutHeader.vue'
   height: 100vh;
   background-color: #f0f2f5;
   display: flex;
+  overflow-y: hidden;
 }
 
 .page-mainer {
@@ -30,9 +31,9 @@ import BasicLayoutHeader from './BasicLayoutHeader.vue'
   display: flex;
   flex-direction: column;
   .page-body {
-    display: flex;
+    //display: flex;
     flex: 1;
-    height: 1px;
+    //height: 1px;
     background-color: #fff;
   }
   .page-header {

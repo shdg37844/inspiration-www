@@ -22,6 +22,7 @@ async function fetchPics() {
     try {
         const response = await inspirationService.getPics();
         pics.value = response.data.images;
+        console.log('返回的图片',response.data.images)
 
     } catch(e) {
         console.error(e);
@@ -50,8 +51,10 @@ fetchPics();
         </div>
 
         <div class="body-content-box">
-            <div class="pic-box">
-                <div class="pic-container" ></div>
+            <div class="pic-box" v-for="(image, index) in pics" :key="index">
+                <div class="pic-container">
+                    <img :src="image.img_url" alt="Inspiration image">
+                </div>
             </div>
         </div>
     </div>
@@ -61,6 +64,7 @@ fetchPics();
 <style type="text/css" lang="less" scoped>
 .body-wrapper {
     display: flex;
+    height: 100vh;
 
     .body-sider {
         display: flex;
@@ -68,6 +72,7 @@ fetchPics();
         gap:40px;
         width:330px;
         padding:20px;
+        height:100vh;
         border-right:1px solid #efefef;
 
         .nav-box {
@@ -94,9 +99,24 @@ fetchPics();
     }
 
     .body-content-box {
-        
+        display: flex;
+        flex-wrap: wrap;
+        flex:1;
+        width:100%;
+        height: 100vh;
+        overflow: auto;
+
         .pic-box {
             display: flex;
+
+            .pic-container {
+
+                img {
+                    width:290px;
+                    height:404px;
+                }
+                
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ import API from "@/consts/api.js";
 const userService = {
     getUserInfo() {
         return request.get(API.userInfo);
-    }
+    },
 };
 
 export default userService;

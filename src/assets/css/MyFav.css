@@ -1,0 +1,24 @@
+.fav-wrap {
+    width: 1180px;
+    margin: 0 auto;
+
+
+    .fav-header {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+
+        .header-left {
+            font-weight: 600;
+            line-height: 42px;
+            font-size: 30px;
+        }
+    }
+
+    .blank-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}

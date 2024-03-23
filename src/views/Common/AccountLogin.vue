@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import loginService from '@/services/login'
 import Cookies from 'js-cookie';
+import loginService from '@/services/login'
 
 const router = useRouter()
 const smsRules = {

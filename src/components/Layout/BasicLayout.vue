@@ -30,12 +30,16 @@ import BasicLayoutHeader from './BasicLayoutHeader.vue'
   flex: 1;
   display: flex;
   flex-direction: column;
+
   .page-body {
+    position: relative;
+    height: 100%;
     //display: flex;
     flex: 1;
     //height: 1px;
     background-color: #fff;
   }
+
   .page-header {
     flex: none;
   }

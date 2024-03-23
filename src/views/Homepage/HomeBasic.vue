@@ -22,7 +22,6 @@ async function fetchPics() {
     try {
         const response = await inspirationService.getPics();
         pics.value = response.data.images;
-        console.log('返回的图片',response.data.images)
 
     } catch(e) {
         console.error(e);
@@ -57,6 +56,8 @@ fetchPics();
                 </div>
             </div>
         </div>
+
+        
     </div>
 
 </template>
@@ -100,14 +101,15 @@ fetchPics();
 
     .body-content-box {
         display: flex;
+        gap:10px;
         flex-wrap: wrap;
         flex:1;
         width:100%;
         height: 100vh;
+        padding:20px;
         overflow: auto;
 
         .pic-box {
-            display: flex;
 
             .pic-container {
 

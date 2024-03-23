@@ -7,6 +7,7 @@ export default {
     ossStore: `${PREFIX}/api/file/alioss-store`,
     classify: `${WEB_PREFIX}/classify`,
     images: `${WEB_PREFIX}/inspiration/images`,
+    favorite: `${WEB_PREFIX}/favorite`,
     
     sms: `${WEB_PREFIX}/aliyun-sms`,  //发送验证短信
     login: `${WEB_PREFIX}/login`,  //登录

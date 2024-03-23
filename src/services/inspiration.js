@@ -8,6 +8,9 @@ const inspirationService = {
     getPics() {
         return request.get(API.images)
     },
+    getFav() {
+        return request.get(API.images)
+    },
 }
 
 

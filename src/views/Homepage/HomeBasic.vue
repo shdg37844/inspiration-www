@@ -123,13 +123,3 @@ fetchPics();
     }
 }
 </style>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    @/services/inspiration@/services/inspiration

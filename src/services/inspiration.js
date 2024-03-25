@@ -14,9 +14,9 @@ const inspirationService = {
     createFav(name, description) {
         return request.post(API.favorite, { name: name, description: description })
     },
-    getFavImages() {
-        const url = API.FavImages.replace(':id', )
-        return request.get(url,)
+    getFavImages(id) {
+        const url = API.FavImages.replace(':id', id)
+        return request.post(url, { id })
     }
 }
 

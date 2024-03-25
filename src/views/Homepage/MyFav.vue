@@ -1,12 +1,14 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
 import inspirationService from '@/services/inspiration'
 import "@/assets/css/MyFav.css"
 
+const router = useRouter()
 const favorites = ref([])
-const showFavForm = ref(false)
 const favText = ref('')
 const favTextarea = ref('')
+const showFavForm = ref(false)
 const isChanged = ref(false)
 
 async function fetchFav() {
@@ -19,26 +21,31 @@ async function fetchFav() {
 }
 fetchFav()
 
-async function fetchFavImg() {
+async function fetchFevInsCount() {
     try {
-        const response = await inspirationService.getFavImages();
         
     } catch (e) {
         console.error(e);
     }
 }
-fetchFavImg()
+fetchFevInsCount()
 
 async function handleAddFav() {
     const name = favText.value
     const description = favTextarea.value
 
+    if (name === '') {
+        alert('收藏夹名字不能为空！')
+        return
+    }
+
     try {
         await inspirationService.createFav(name, description)
         favorites.value.push({
             name: name,
-            description: description
+            description: description,
         })
+        showFavForm.value = false;
 
     } catch (e) {
         console.error(e);
@@ -49,6 +56,10 @@ function toggleChange() {
     isChanged.value = !isChanged.value
 }
 
+async function handleOpenFav(id) {
+    router.push(`/fav/${id}`);
+}
+
 </script>
 
 
@@ -56,7 +67,7 @@ function toggleChange() {
     <div class="fav-wrap">
         <div class="fav-header">
             <div class="header-left">我的收藏</div>
-            <header class="header-right" @click="showFavForm = true">
+            <div class="header-right" @click="showFavForm = true">
                 <svg class="createIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                     fill="none">
                     <path d="M1 12H23M11.9998 1V23" stroke="#333333" stroke-width="4" />
@@ -66,11 +77,35 @@ function toggleChange() {
                     <circle cx="20" cy="20" r="20" fill="#EEEEEE" />
                     <path d="M9 20H31M19.9998 9V31" stroke="#333333" stroke-width="4" />
                 </svg>
-            </header>
+                <svg class="prompt-text" width="84" height="33" viewBox="0 0 84 33" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_168_1859)">
+                        <rect width="76" height="25" transform="translate(4 2)" fill="black" fill-opacity="0.8" />
+                        <path
+                            d="M17.148 13.816V15.976C17.148 16.3 16.98 16.468 16.668 16.468C16.308 16.468 15.9 16.444 15.444 16.396L15.66 17.212C16.08 17.236 16.524 17.248 16.98 17.248C17.64 17.224 17.976 16.888 17.988 16.24V13.048H13.716V19.072C13.716 19.684 14.04 19.996 14.712 19.996H17.568C18.132 19.996 18.516 19.9 18.708 19.708C18.924 19.468 19.08 18.844 19.164 17.824L18.348 17.56C18.3 18.22 18.216 18.664 18.108 18.892C18.012 19.084 17.748 19.192 17.34 19.192H15.048C14.736 19.192 14.592 19.048 14.592 18.772V13.816H17.148ZM15.624 9.304C14.664 10.744 13.596 11.992 12.42 13.06L12.924 13.756C14.1 12.652 15.12 11.44 16.008 10.12C16.776 10.936 17.676 12.028 18.708 13.396L19.272 12.796C18.312 11.572 17.304 10.408 16.26 9.304H15.624ZM19.98 10.252V17.728H20.82V10.252H19.98ZM21.984 20.092C22.656 20.092 23.004 19.72 23.004 19V9.232H22.14V18.784C22.14 19.144 21.984 19.324 21.684 19.324C21.132 19.324 20.544 19.3 19.932 19.264L20.124 20.092H21.984ZM34.488 14.116V12.436H35.292V11.716H34.488V10.048H31.92V9.172H31.08V10.048H28.98V10.768H31.08V11.716H28.392V12.436H31.08V13.396H28.98V14.116H31.08V15.076H28.728V15.784H31.08V16.78H28.356V17.512H31.08V18.7H31.92V17.512H35.076V16.78H31.92V15.784H34.728V15.076H31.92V14.116H34.488ZM31.92 10.768H33.648V11.716H31.92V10.768ZM31.92 12.436H33.648V13.396H31.92V12.436ZM31.356 19.132C29.724 19.108 28.488 18.88 27.672 18.424C27.468 18.304 27.276 18.148 27.084 17.944C27.66 16.84 27.984 15.496 28.032 13.912V13.396H26.148C26.724 12.58 27.324 11.632 27.924 10.528V9.82H24.984V10.636H26.952C26.376 11.668 25.728 12.628 25.032 13.516V14.188H27.252C27.18 15.328 26.94 16.324 26.532 17.176C26.22 16.648 25.932 15.952 25.692 15.1L24.972 15.364C25.26 16.396 25.644 17.248 26.112 17.92C25.728 18.472 25.26 18.952 24.696 19.36L25.26 20.092C25.812 19.672 26.292 19.18 26.676 18.616C26.796 18.736 26.928 18.844 27.084 18.964C28.02 19.588 29.568 19.9 31.728 19.9H35.28L35.424 19.072C34.032 19.108 32.676 19.132 31.356 19.132ZM37.08 17.824C37.992 17.584 38.88 17.32 39.72 17.02V20.128H40.572V9.256H39.72V16.18C39.12 16.408 38.52 16.612 37.92 16.78V10.228H37.08V16.804C37.08 16.924 36.984 17.02 36.816 17.092L37.08 17.824ZM43.02 11.872H45.432C45.36 13.528 44.976 14.968 44.256 16.192C43.56 15.208 43.008 14.128 42.576 12.952C42.732 12.616 42.876 12.256 43.02 11.872ZM42.072 13.888C42.504 14.992 43.068 16.012 43.74 16.972C42.996 17.956 41.988 18.76 40.728 19.384L41.22 20.164C42.468 19.492 43.488 18.664 44.28 17.668C45.036 18.604 45.936 19.468 46.98 20.248L47.568 19.552C46.512 18.784 45.6 17.908 44.808 16.924C45.696 15.532 46.176 13.84 46.26 11.872H47.292V11.02H43.284C43.428 10.492 43.56 9.916 43.68 9.304L42.816 9.16C42.468 11.272 41.796 12.964 40.812 14.212L41.352 14.872C41.604 14.572 41.844 14.248 42.072 13.888ZM48.78 9.964V10.72H51.576V11.548H52.464V10.72H55.548V11.56H56.292V12.052H50.88V13.66H49.788V11.644H49.044V14.38H50.88V15.592H48.552V16.312H49.236C49.188 17.716 48.924 18.676 48.444 19.204L49.044 19.672C49.572 19.036 49.872 17.92 49.92 16.312H50.88V16.444C50.856 17.812 50.64 18.868 50.208 19.636L50.832 20.2C51.36 19.252 51.636 18.004 51.66 16.444V12.784H56.304C56.352 14.344 56.472 15.616 56.664 16.6C56.736 17.008 56.832 17.38 56.94 17.728C56.604 18.292 56.208 18.76 55.752 19.144V18.652H54.696V17.512H55.74V15.232H54.696V14.188H55.752V13.492H52.332V19.348H55.476L55.272 19.48L55.68 20.128C56.28 19.768 56.808 19.276 57.264 18.652C57.36 18.892 57.456 19.096 57.576 19.288C57.936 19.864 58.284 20.164 58.596 20.164C58.98 20.164 59.28 19.42 59.484 17.932L58.86 17.584C58.74 18.664 58.596 19.204 58.452 19.216C58.332 19.216 58.152 18.976 57.936 18.52C57.852 18.352 57.78 18.148 57.708 17.908C58.272 16.828 58.644 15.448 58.836 13.744L58.104 13.588C57.984 14.776 57.756 15.808 57.42 16.696C57.396 16.576 57.372 16.444 57.348 16.3C57.204 15.484 57.108 14.308 57.06 12.784H59.316V12.052H58.716C58.596 11.668 58.464 11.332 58.344 11.032L57.612 11.152C57.756 11.428 57.888 11.728 58.008 12.052H57.048V11.38H56.436V10.72H59.232V9.964H56.436V9.208H55.548V9.964H52.464V9.196H51.576V9.964H48.78ZM54.012 14.188V15.232H53.04V14.188H54.012ZM53.04 15.868H55.068V16.864H53.04V15.868ZM53.04 17.512H54.012V18.652H53.04V17.512ZM61.224 10.684V11.5H65.556V13.132C65.532 13.756 65.46 14.332 65.352 14.884H60.744V15.7H65.136C64.968 16.204 64.74 16.66 64.464 17.092C63.732 18.064 62.448 18.844 60.6 19.444L61.068 20.164C62.928 19.576 64.272 18.76 65.088 17.704C65.472 17.176 65.784 16.564 66.012 15.856C66.648 17.668 68.28 19.096 70.92 20.152L71.376 19.408C68.88 18.52 67.332 17.284 66.744 15.7H71.256V14.884H68.808C69.264 14.116 69.648 13.252 69.96 12.268L69.096 12.028C68.748 13.156 68.352 14.104 67.908 14.884H66.252C66.348 14.344 66.408 13.756 66.432 13.132V11.5H70.776V10.684H66.432V9.208H65.556V10.684H61.224ZM62.832 12.04L62.04 12.304C62.376 13.048 62.664 13.816 62.892 14.608L63.696 14.404C63.444 13.516 63.156 12.736 62.832 12.04Z"
+                            fill="white" />
+                    </g>
+                    <defs>
+                        <filter id="filter0_d_168_1859" x="0" y="0" width="84" height="33" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="2" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_168_1859" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_168_1859"
+                                result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+
+            </div>
         </div>
 
         <div class="favorites-list" v-if="favorites.length > 0">
-            <div class="favorite-item-container" v-for="(fav, index) in favorites" :key="index">
+            <div class="favorite-item-container" v-for="fav in favorites" :key="fav.id" @click="handleOpenFav(fav.id)">
                 <div class="images-box">
                     <div class="box-right"></div>
                     <div class="box-left"></div>
@@ -155,7 +190,7 @@ function toggleChange() {
                     <span class="create-left-text">取消</span>
                 </div>
                 <div class="create-right">
-                    <button class="create-btn" @click="handleAddFav(); showFavForm = false">创建</button>
+                    <button class="create-btn" @click="handleAddFav();">创建</button>
                 </div>
             </div>
         </div>

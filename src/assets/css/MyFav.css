@@ -9,6 +9,7 @@
         margin-top: 40px;
 
         .header-right {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -21,9 +22,19 @@
                 display: none;
             }
 
+            .prompt-text {
+                display: none;
+            }
+
         }
 
         .header-right:hover .createIcon-hover {
+            display: block;
+        }
+
+        .header-right:hover .prompt-text {
+            position: absolute;
+            left: 50px;
             display: block;
         }
 

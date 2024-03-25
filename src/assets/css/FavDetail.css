@@ -1,0 +1,25 @@
+.detail-wrap {
+    width: 1180px;
+    margin: 0 auto;
+
+    .detail-header {
+        margin-top: 40px;
+
+        .header-left {
+
+
+            .title {
+                margin-left: 20px;
+                font-size: 30px;
+                font-weight: 600;
+                line-height: 42px;
+                text-align: left;
+                color: #333;
+            }
+        }
+
+        .header-right {}
+    }
+
+    .images-list {}
+}

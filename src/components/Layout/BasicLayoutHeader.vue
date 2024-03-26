@@ -95,7 +95,7 @@ async function handleSubmit() {
 
 <template>
   <div class="header-section">
-    <div class="header-hd">
+    <div class="header-hd" @click="$router.push('/')">
       <img src="@/assets/images/icons/headerLogo.png">
     </div>
 

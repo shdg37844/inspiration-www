@@ -9,6 +9,7 @@ export default {
     images: `${WEB_PREFIX}/inspiration/images`,
     FavImages: `${WEB_PREFIX}/inspiration/:id/images`,
     favorite: `${WEB_PREFIX}/favorite`,
+    FavIns: `${WEB_PREFIX}/InsFav`,
 
     sms: `${WEB_PREFIX}/aliyun-sms`,  //发送验证短信
     login: `${WEB_PREFIX}/login`,  //登录

@@ -16,8 +16,11 @@ const inspirationService = {
     },
     getFavImages(id) {
         const url = API.FavImages.replace(':id', id)
-        return request.post(url, { id })
-    }
+        return request.get(url)
+    },
+    getFavIns() {
+        return request.get(API.FavIns)
+    },
 }
 
 

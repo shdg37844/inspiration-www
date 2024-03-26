@@ -7,6 +7,7 @@
         display: flex;
         justify-content: space-between;
         margin-top: 40px;
+        margin-bottom: 30px;
 
         .header-right {
             position: relative;
@@ -60,11 +61,24 @@
                 margin-bottom: 15px;
                 width: 290px;
                 height: 217px;
+                background-color: #cccccc;
 
-                .box-right {
+                .box-left {
                     width: 188px;
                     border-right: 1px solid #fff;
                 }
+
+                .box-right {
+                    display: flex;
+                    flex-direction: column;
+                    width: 101px;
+
+                    .box-left-cell-first {
+                        height: 108px;
+                        border-bottom: 1px solid #fff;
+                    }
+                }
+
             }
 
             .fav-name {

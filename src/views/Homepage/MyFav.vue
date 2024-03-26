@@ -13,22 +13,24 @@ const isChanged = ref(false)
 
 async function fetchFav() {
     try {
-        const response = await inspirationService.getFav();
-        favorites.value = response.data.favorite
+        const allresponse = await inspirationService.getFav();
+        const bindresponse = await inspirationService.getFavIns();
+        const fav_ids_Res = allresponse.data.favorite
+        const bind = bindresponse.data.FavInsCount
+
+        const favResults = fav_ids_Res.map(item => ({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            count: bind.find(p => item.id === p.fav_id)?.insCount || 0
+        }))
+
+        favorites.value = favResults
     } catch (e) {
         console.error(e);
     }
 }
 fetchFav()
-
-async function fetchFevInsCount() {
-    try {
-        
-    } catch (e) {
-        console.error(e);
-    }
-}
-fetchFevInsCount()
 
 async function handleAddFav() {
     const name = favText.value
@@ -107,12 +109,15 @@ async function handleOpenFav(id) {
         <div class="favorites-list" v-if="favorites.length > 0">
             <div class="favorite-item-container" v-for="fav in favorites" :key="fav.id" @click="handleOpenFav(fav.id)">
                 <div class="images-box">
-                    <div class="box-right"></div>
                     <div class="box-left"></div>
+                    <div class="box-right">
+                        <div class="box-left-cell-first"></div>
+                        <div class="box-left-cell"></div>
+                    </div>
                 </div>
                 <div class="fav-name">{{ fav.name }}</div>
                 <div class="count">
-                    <span>{{ }}</span>
+                    <span>{{ fav.count }}</span>&nbsp;
                     <span>张</span>
                 </div>
             </div>

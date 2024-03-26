@@ -8,6 +8,7 @@
 
     .header-hd {
         margin-right: 210px;
+        cursor: pointer;
     }
 
     .header-bd {

@@ -1,5 +1,5 @@
 .fav-wrap {
-    width: 1180px;
+    width: 1230px;
     margin: 0 auto;
 
 
@@ -53,6 +53,8 @@
     .favorites-list {
         display: flex;
         gap: 20px;
+        flex-wrap: wrap;
+
 
         .favorite-item-container {
 

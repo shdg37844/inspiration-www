@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { PoweroffOutlined, DownOutlined } from '@ant-design/icons-vue'
-import { Search } from '@element-plus/icons-vue'
 import Cookies from 'js-cookie';
 import loginService from '@/services/login'
 import "@/assets/css/BasicLayoutHeader.css"
@@ -100,14 +99,6 @@ async function handleSubmit() {
     </div>
 
     <div class="header-bd">
-      <!-- <div class="flex gap-4 mb-4">
-            <el-input
-              v-model="input"
-              style="width: 240px"
-              placeholder="搜索高质量家居灵感图片"
-              :prefix-icon="Search"
-            />
-        </div> -->
       <div class="search-bar">
         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
           fill="none">

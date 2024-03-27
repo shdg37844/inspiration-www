@@ -21,6 +21,9 @@ const inspirationService = {
     getFavIns() {
         return request.get(API.FavIns)
     },
+    addBind(fav_id, ins_id) {
+        return request.post(API.FavIns, { fav_id, ins_id })
+    }
 }
 
 

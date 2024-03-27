@@ -1,8 +1,10 @@
 .detail-wrap {
-    width: 1180px;
+    width: 1230px;
     margin: 0 auto;
 
     .detail-header {
+        display: flex;
+        justify-content: space-between;
         margin-top: 40px;
 
         .header-left {
@@ -21,13 +23,46 @@
             }
         }
 
-        .header-right {}
+        .header-right {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .createIcon {
+                margin-right: 8px;
+            }
+
+            .createIcon-hover {
+                display: none;
+            }
+
+            .prompt-text {
+                display: none;
+            }
+
+        }
+
+        .header-right:hover .createIcon-hover {
+            display: block;
+        }
+
+        .header-right:hover .prompt-text {
+            position: absolute;
+            left: 50px;
+            display: block;
+        }
+
+        .header-right:hover .createIcon {
+            display: none;
+        }
     }
 
     .images-list {
         display: flex;
         gap: 20px;
         margin-top: 25px;
+        flex-wrap: wrap;
 
         .pic-container {
 
@@ -36,5 +71,45 @@
                 height: 404px;
             }
         }
+    }
+}
+
+.upload-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+
+    .upload-content {
+        position: relative;
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 1008px;
+        height: 521px;
+        padding: 15px 10px;
+        background: #FFF;
+
+        .title-section {
+            display: flex;
+            justify-content: start;
+            margin-bottom: 15px;
+            width: 100%;
+
+            span {
+                font-size: 16px;
+                font-weight: 600;
+                line-height: 22.4px;
+                text-align: left;
+                color: #333;
+            }
+        }
+
+
+
     }
 }

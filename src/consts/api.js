@@ -13,4 +13,6 @@ export default {
 
     sms: `${WEB_PREFIX}/aliyun-sms`,  //发送验证短信
     login: `${WEB_PREFIX}/login`,  //登录
+
+    qiniuUpload: `${WEB_PREFIX}/qiniu-uploadtoken`, //七牛云上传图片
 } 

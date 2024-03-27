@@ -91,13 +91,13 @@
         align-items: center;
         width: 1008px;
         height: 521px;
-        padding: 15px 10px;
+        padding: 20px 20px;
         background: #FFF;
 
         .title-section {
             display: flex;
             justify-content: start;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             width: 100%;
 
             span {
@@ -109,7 +109,81 @@
             }
         }
 
+        .upload-opration {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            width: 100%;
 
+            .opration-box {
+                width: 389px;
+                height: 449px;
+                border: 2px dotted #efefef;
+
+                .avatar-uploader {
+                    .components {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 130px;
+                        margin-left: 20px;
+                        margin-top: 60px;
+
+                        .upload-box {
+                            width: 160px;
+                            height: 200px;
+                            margin-left: 50px;
+
+                            img {
+                                height: 100%;
+                                font-size: 0;
+                            }
+                        }
+                    }
+                }
+
+                .image-box {
+                    width: 389px;
+                    height: 449px;
+                }
+            }
+
+            .add-content-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 450px;
+
+                .content-box-top {
+                    .content-title {
+                        margin-bottom: 10px;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 19.6px;
+                        text-align: left;
+                        color: #666;
+                    }
+
+                    .content-textarea .el-textarea__inner {
+                        height: 100px;
+                    }
+                }
+
+                .content-box-bottom {
+                    display: flex;
+                    gap: 10px;
+                    justify-content: end;
+
+                    .cancle-btn {
+                        cursor: pointer;
+                    }
+
+                    .create-btn {
+                        cursor: pointer;
+                    }
+                }
+
+            }
+        }
 
     }
 }

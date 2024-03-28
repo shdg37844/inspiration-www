@@ -3,28 +3,51 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router'
 import { ElUpload, ElMessage } from 'element-plus';
 import inspirationService from '@/services/inspiration'
-import "@/assets/css/FavDetail.css"
+import "@/assets/css/FavDetail.css";
 
 const route = useRoute()
 const favImg = ref([])
 const FavTitle = ref('')
+const FavDescription = ref('')
+const favorites = ref([])
 const showUploadForm = ref(false)
+const showImgForm = ref(false)
+const currentSelectedImg = ref('')
 
 async function fetchFevImg() {
     const id = route.params.id
 
     try {
         const response = await inspirationService.getFavImages(id)
-        const favImgs = response.data.img_urls
-        const selectedFavName = response.data.selectedFavName
-        favImg.value = favImgs
-        FavTitle.value = selectedFavName
+        favImg.value = response.data.imgs;
 
+        const selectedFavName = response.data.selectedFavName
+        const selectedFavDescription = response.data.selectedFavDescription
+
+        FavTitle.value = selectedFavName
+        FavDescription.value = selectedFavDescription
     } catch (e) {
         console.error(e);
     }
 }
 fetchFevImg()
+
+async function fetchFav() {
+    try {
+        const allresponse = await inspirationService.getFav();
+        const fav_ids_Res = allresponse.data.favorite
+
+        const favResults = fav_ids_Res.map(item => ({
+            id: item.id,
+            name: item.name,
+        }))
+
+        favorites.value = favResults
+    } catch (e) {
+        console.error(e);
+    }
+}
+fetchFav()
 
 //七牛云上传图片
 // 定义响应式数据
@@ -32,7 +55,11 @@ const serverUrl = ref('https://upload.qiniup.com'); // 服务器地址
 const header = ref({}); // 请求头
 const token = ref('');
 const uploadedImageUrl = ref('');
-const isImageUploaded = ref(false)
+const isImageUploaded = ref(false);
+const contentTextarea = ref('');
+const categoryId = ref(null);
+const combinedClassify = ref([])
+
 
 // 获取七牛云上传Token
 async function getQiniuToken() {
@@ -75,7 +102,59 @@ function uploadError(err) {
     ElMessage.error('上传失败');
 }
 
+async function fetchClassify() {
+    try {
+        const response = await inspirationService.getClassify();
+        const spaceRes = response.data.spaceClassify
+        const styleRes = response.data.styleClassify
 
+        const spaceClassifies = spaceRes.map(item => ({
+            id: item.id,
+            name: item.name
+        }))
+
+        const styleClassifies = styleRes.map(item => ({
+            id: item.id,
+            name: item.name
+        }))
+
+        combinedClassify.value = [...spaceClassifies, ...styleClassifies];
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+fetchClassify();
+
+async function handleUpload() {
+    const uploadData = {
+        img_url: uploadedImageUrl.value,
+        content: contentTextarea.value,
+        category_id: categoryId.value,
+        fav_id: route.params.id
+    };
+
+    try {
+        const response = await inspirationService.uploadImg(uploadData)
+
+        if (response.error_code === 0) {
+            alert("插入成功！")
+            favImg.value.push({ img_url: uploadData.img_url })
+            showUploadForm.value = false
+        } else {
+            console.error("发生错误：", response.message);
+        }
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function clickOpenEditForm(img_id) {
+    const index = favImg.value.findIndex(item => item.ins_id === img_id)
+    currentSelectedImg.value = favImg.value[index].img_url
+    showImgForm.value = true
+}
 
 </script>
 
@@ -125,9 +204,17 @@ function uploadError(err) {
 
             </div>
         </div>
+        <p class="description">{{ FavDescription }}</p>
         <div class="images-list">
-            <div class="pic-container" v-for="(image, index) in favImg" :key="index">
+            <div class="pic-container" v-for="image in favImg" :key="image.ins_id">
                 <img :src="image.img_url" alt="Inspiration image">
+                <div class="overlay"></div>
+                <svg class="edit-icon" @click="clickOpenEditForm(image.ins_id)" width="40" height="40"
+                    viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="20" fill="white" fill-opacity="0.8" />
+                    <path d="M22 14L25 11L29 15L26 18L22 14Z" fill="#333333" />
+                    <path d="M25 19L21 15L11 25V29H15L25 19Z" fill="#333333" />
+                </svg>
             </div>
         </div>
     </div>
@@ -135,7 +222,7 @@ function uploadError(err) {
     <div class="upload-mask" v-if="showUploadForm">
         <div class="upload-content">
             <div class="title-section">
-                <span>上传图片至</span>
+                <span>上传图片至{{ FavTitle }}</span>
             </div>
             <div class="upload-opration">
                 <el-form-item class="opration-box">
@@ -157,8 +244,14 @@ function uploadError(err) {
                 <div class="add-content-box">
                     <div class="content-box-top">
                         <div class="content-title">添加说明（选填）</div>
-                        <el-input v-model="favTextarea" class="content-textarea" maxlength="80" style="width: 519px;"
-                            placeholder="请输入内容" show-word-limit type="textarea" />
+                        <el-input v-model="contentTextarea" class="content-textarea" maxlength="80"
+                            style="width: 519px;" placeholder="请输入内容" show-word-limit type="textarea" />
+                        <el-form-item label="类目">
+                            <el-select placeholder="请选择类目" v-model="categoryId">
+                                <el-option v-for="item in combinedClassify" :label="item.name" :key="item.id"
+                                    :value="item.id" />
+                            </el-select>
+                        </el-form-item>
                     </div>
                     <div class="content-box-bottom">
                         <svg class="cancle-btn" @click="showUploadForm = false; isImageUploaded = false;" width="72"
@@ -169,8 +262,8 @@ function uploadError(err) {
                                 d="M29.714 22.382C29.336 22.48 28.944 22.578 28.538 22.676V15.228H29.392V16.026H29.952C30.134 18.294 30.722 20.394 31.702 22.326C30.988 23.502 30.092 24.524 29 25.378L29.91 26.414C30.89 25.644 31.73 24.72 32.458 23.642C33.06 24.594 33.788 25.518 34.656 26.414L35.552 25.392C34.614 24.496 33.816 23.502 33.172 22.41C34.082 20.618 34.684 18.476 34.992 15.97V14.752H29.504V13.982H22.756V15.228H23.764V23.572L22.588 23.712L22.91 25.014C24.408 24.79 25.85 24.538 27.25 24.258V26.414H28.538V23.992L29.714 23.712V22.382ZM31.17 16.026H33.746C33.508 17.874 33.06 19.526 32.416 20.982C31.744 19.484 31.338 17.832 31.17 16.026ZM27.25 22.97C26.536 23.11 25.808 23.25 25.066 23.376V21.318H27.25V22.97ZM25.066 20.128V18.28H27.25V20.128H25.066ZM25.066 17.076V15.228H27.25V17.076H25.066ZM44.19 13.562V17.3H41.25V26.358H42.594V23.418H47.172V24.454C47.172 24.874 46.962 25.084 46.556 25.084L45.086 25.042L45.436 26.33H46.99C47.998 26.33 48.502 25.798 48.502 24.748V17.3H45.534V13.562H44.19ZM42.594 21.01H47.172V22.284H42.594V21.01ZM47.172 19.876H42.594V18.588H47.172V19.876ZM41.684 13.884L40.578 14.416C41.124 15.116 41.628 15.886 42.104 16.754L43.154 16.236C42.678 15.382 42.188 14.598 41.684 13.884ZM47.984 13.87C47.62 14.696 47.116 15.522 46.472 16.362L47.494 16.908C48.138 16.096 48.67 15.256 49.062 14.388L47.984 13.87ZM39.094 20.772C38.436 22.466 37.666 24.118 36.798 25.742L38.03 26.288C38.842 24.706 39.598 23.012 40.27 21.22L39.094 20.772ZM38.002 13.66L37.05 14.584C38.1 15.34 38.912 16.04 39.5 16.698L40.452 15.746C39.78 15.046 38.968 14.36 38.002 13.66ZM37.61 16.936L36.658 17.86C37.638 18.63 38.408 19.344 38.968 19.988L39.906 19.036C39.29 18.336 38.52 17.636 37.61 16.936Z"
                                 fill="#999999" />
                         </svg>
-                        <svg class="create-btn" width="100" height="40" viewBox="0 0 100 40" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg class="create-btn" @click="handleUpload()" width="100" height="40" viewBox="0 0 100 40"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="100" height="40" rx="2" fill="#333333" />
                             <path
                                 d="M27.656 13.52V24.65H22.742V25.938H35.286V24.65H29.028V19.022H34.208V17.734H29.028V13.52H27.656ZM38.184 19.022V26.47H39.5V17.118C40.06 16.152 40.522 15.144 40.872 14.094L39.612 13.506C38.926 15.634 37.862 17.482 36.434 19.078L36.868 20.492C37.344 20.016 37.778 19.526 38.184 19.022ZM40.858 15.2V16.488H43.224C43.112 16.936 42.986 17.37 42.86 17.804H40.242V19.078H42.454C42.132 20.016 41.796 20.926 41.432 21.794H47.312C46.738 22.48 45.954 23.152 44.974 23.824C44.19 23.46 43.378 23.11 42.538 22.802L41.824 23.852C43.616 24.51 45.38 25.406 47.088 26.554L47.844 25.406C47.298 25.056 46.724 24.72 46.136 24.412C47.312 23.502 48.166 22.606 48.726 21.71V20.562H43.154C43.35 20.1 43.532 19.61 43.728 19.078H49.482V17.804H44.148C44.274 17.384 44.4 16.95 44.54 16.488H48.908V15.2H44.876C44.988 14.696 45.114 14.178 45.226 13.632L43.924 13.506L43.546 15.2H40.858ZM55.502 15.396C55.068 16.39 54.242 17.244 53.01 17.944L53.738 18.91C54.214 18.602 54.648 18.28 55.026 17.944C55.362 18.28 55.754 18.602 56.202 18.91C55.278 19.302 54.13 19.596 52.786 19.82L53.36 20.884C54.9 20.534 56.202 20.1 57.266 19.568C58.218 20.072 59.338 20.492 60.64 20.842L61.326 19.848C60.22 19.596 59.24 19.288 58.372 18.896C59.1 18.364 59.646 17.762 59.996 17.076V16.18H56.398C56.496 15.984 56.594 15.774 56.678 15.55L55.502 15.396ZM57.294 18.364C56.692 18.028 56.16 17.636 55.712 17.216C55.712 17.188 55.74 17.174 55.768 17.146H58.666C58.33 17.594 57.868 18 57.294 18.364ZM54.578 22.13L54.074 23.124C55.936 23.488 57.728 23.978 59.464 24.608L59.898 23.544C58.19 22.928 56.426 22.466 54.578 22.13ZM56.006 20.24L55.404 21.108C56.454 21.416 57.476 21.836 58.47 22.382L59.086 21.43C58.162 20.968 57.126 20.576 56.006 20.24ZM62.852 14.038H51.148V26.442H52.45V25.952H61.55V26.442H62.852V14.038ZM52.45 24.776V15.214H61.55V24.776H52.45ZM68.494 18.35H76.544V17.076H73.59V13.52H72.288V17.076H68.494V13.926H67.164V19.092C67.136 22.046 66.422 24.202 65.022 25.546L66.044 26.442C67.192 25.322 67.934 23.74 68.284 21.696H73.562V26.47H74.892V20.422H68.438C68.466 20.002 68.494 19.568 68.494 19.092V18.35Z"
@@ -183,4 +276,42 @@ function uploadError(err) {
         </div>
     </div>
 
+    <div class="img-mask" v-if="showImgForm">
+        <div class="img-content">
+            <div class="content-left">
+                <img :src="currentSelectedImg" alt="img">
+            </div>
+            <div class="content-right">
+                <div class="img-title">编辑图片</div>
+                <div class="img-form">
+                    <div class="form-item">
+                        <div class="title">选择收藏夹</div>
+                        <el-form-item>
+                            <el-select placeholder="请选择收藏夹" v-model="categoryId">
+                                <el-option v-for="item in favorites" :label="item.name" :key="item.id"
+                                    :value="item.id" />
+                            </el-select>
+                        </el-form-item>
+
+                    </div>
+                    <div class="form-item">
+                        <div class="title">描述（选填）</div>
+                        <el-input class="img-textarea" maxlength="80" style="width: 519px;" placeholder="请输入内容"
+                            show-word-limit type="textarea" />
+                    </div>
+                </div>
+                <div class="img-edit-btns">
+                    <div class="edit-left">
+                        <button class="remove-fav-btn" @click="handleDeleteImg()">移除图片</button>
+                    </div>
+                    <div class="edit-right">
+                        <button class="cancel-btn" @click="showImgForm = false">取消</button>
+                        <button class="save-btn" @click="handleSaveImgUpdate()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
+

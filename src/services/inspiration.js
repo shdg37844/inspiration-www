@@ -27,6 +27,17 @@ const inspirationService = {
     getQiniuToken() {
         return request.get(API.qiniuUpload)
     },
+    uploadImg(uploadData) {
+        const url = API.uploadImage.replace(':id', uploadData.fav_id)
+        return request.post(url, { uploadData })
+    },
+    updateFav(id, name, description) {
+        return request.put(API.favorite, { id, name, description })
+    },
+    deleteFav(id) {
+        const url = API.selectedFav.replace(':id', id)
+        return request.delete(url)
+    }
 }
 
 

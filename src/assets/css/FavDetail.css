@@ -21,6 +21,7 @@
                 text-align: left;
                 color: #333;
             }
+
         }
 
         .header-right {
@@ -58,19 +59,60 @@
         }
     }
 
+    .description {
+        display: block;
+        margin-left: 40px;
+        margin-top: 10px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 19.6px;
+        text-align: left;
+        color: #999;
+    }
+
     .images-list {
         display: flex;
         gap: 20px;
-        margin-top: 25px;
+        margin-top: 30px;
         flex-wrap: wrap;
 
+
         .pic-container {
+            position: relative;
 
             img {
                 width: 290px;
                 height: 404px;
             }
+
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0);
+                transition: background-color 0.5s ease;
+            }
+
+            .edit-icon {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                display: none;
+                cursor: pointer;
+            }
+
         }
+
+        .pic-container:hover .overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .pic-container:hover .edit-icon {
+            display: block;
+        }
+
     }
 }
 
@@ -163,6 +205,10 @@
                         color: #666;
                     }
 
+                    .content-textarea {
+                        margin-bottom: 30px;
+                    }
+
                     .content-textarea .el-textarea__inner {
                         height: 100px;
                     }
@@ -185,5 +231,127 @@
             }
         }
 
+    }
+}
+
+.img-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.45);
+
+    .img-content {
+        position: relative;
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        width: 870px;
+        height: 444px;
+        background: #FFF;
+
+        .content-left {
+            width: 271px;
+            height: 100%;
+
+            img {
+                width: 100%;
+                height: 100%;
+                font-size: 0;
+            }
+        }
+
+        .content-right {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 40px 35px;
+
+
+            .img-title {
+                font-size: 24px;
+                font-weight: 600;
+                line-height: 33.6px;
+                text-align: center;
+                color: #333;
+            }
+
+            .img-form {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+
+                .form-item {
+
+                    .title {
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 19.6px;
+                        color: #666;
+                    }
+
+                    .img-textarea .el-textarea__inner {
+                        height: 100px;
+                    }
+                }
+            }
+
+            .img-edit-btns {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 40px;
+
+                .edit-left {
+                    .remove-fav-btn {
+                        width: 114px;
+                        height: 40px;
+                        font-weight: 500;
+                        background-color: #eee;
+                        color: #333;
+                        border: none;
+                        cursor: pointer;
+                    }
+
+                    .remove-fav-btn:hover {
+                        background-color: #999;
+                    }
+                }
+
+                .edit-right {
+                    display: flex;
+                    gap: 10px;
+
+                    .cancel-btn {
+                        width: 72px;
+                        height: 40px;
+                        background-color: #eee;
+                        color: #333;
+                        border: none;
+                        cursor: pointer;
+                    }
+
+                    .cancel-btn:hover {
+                        background-color: #999;
+                    }
+
+                    .save-btn {
+                        width: 72px;
+                        height: 40px;
+                        background-color: #333333;
+                        color: #fff;
+                        border: none;
+                        cursor: pointer;
+                    }
+
+                    .save-btn:hover {
+                        background-color: #797979;
+                    }
+                }
+            }
+        }
     }
 }

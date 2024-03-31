@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router'
 import { ElUpload, ElMessage } from 'element-plus';
 import inspirationService from '@/services/inspiration'
@@ -13,6 +13,9 @@ const favorites = ref([])
 const showUploadForm = ref(false)
 const showImgForm = ref(false)
 const currentSelectedImg = ref('')
+const selectedFav = ref('')
+const InsDescription = ref('')
+const selectedImgId = ref(null)
 
 async function fetchFevImg() {
     const id = route.params.id
@@ -48,6 +51,61 @@ async function fetchFav() {
     }
 }
 fetchFav()
+
+function clickOpenEditForm(img_id) {
+    selectedImgId.value = img_id
+    selectedFav.value = FavTitle.value
+
+    const index = favImg.value.findIndex(item => item.ins_id === img_id)
+    currentSelectedImg.value = favImg.value[index].img_url
+    showImgForm.value = true
+}
+
+async function handleSaveImgUpdate() {
+    const content = InsDescription.value
+    const fav_id = typeof selectedFav.value === 'number' ? selectedFav.value : route.params.id;
+
+    const ins_id = selectedImgId.value
+    const pre_fav_id = route.params.id
+
+    if (fav_id)
+
+        try {
+            const response = await inspirationService.updateInsFav(fav_id, ins_id, content, pre_fav_id)
+            if (response.error_code === 0) {
+                const index = favImg.value.findIndex(item => item.id === ins_id)
+                if (fav_id === route.params.id) {
+                    alert("修改成功")
+                    showImgForm.value = false
+                } else {
+                    favImg.value.splice(index, 1)
+                    alert("修改成功")
+                    showImgForm.value = false
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+}
+
+async function handleDeleteBind() {
+    const fav_id = route.params.id
+    const ins_id = selectedImgId.value
+
+    try {
+        const response = await inspirationService.deleteInsFav(fav_id, ins_id)
+        console.log("res:", response)
+        if (response.error_code === 0) {
+            const index = favImg.value.findIndex(item => item.id === ins_id)
+            favImg.value.splice(index, 1)
+            alert("删除成功")
+            showImgForm.value = false
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 
 //七牛云上传图片
 // 定义响应式数据
@@ -148,12 +206,6 @@ async function handleUpload() {
     } catch (e) {
         console.error(e);
     }
-}
-
-function clickOpenEditForm(img_id) {
-    const index = favImg.value.findIndex(item => item.ins_id === img_id)
-    currentSelectedImg.value = favImg.value[index].img_url
-    showImgForm.value = true
 }
 
 </script>
@@ -287,22 +339,21 @@ function clickOpenEditForm(img_id) {
                     <div class="form-item">
                         <div class="title">选择收藏夹</div>
                         <el-form-item>
-                            <el-select placeholder="请选择收藏夹" v-model="categoryId">
+                            <el-select :placeholder="请输入收藏夹名称" v-model="selectedFav">
                                 <el-option v-for="item in favorites" :label="item.name" :key="item.id"
                                     :value="item.id" />
                             </el-select>
                         </el-form-item>
-
                     </div>
                     <div class="form-item">
                         <div class="title">描述（选填）</div>
                         <el-input class="img-textarea" maxlength="80" style="width: 519px;" placeholder="请输入内容"
-                            show-word-limit type="textarea" />
+                            show-word-limit type="textarea" v-model="InsDescription" />
                     </div>
                 </div>
                 <div class="img-edit-btns">
                     <div class="edit-left">
-                        <button class="remove-fav-btn" @click="handleDeleteImg()">移除图片</button>
+                        <button class="remove-fav-btn" @click="handleDeleteBind()">移除图片</button>
                     </div>
                     <div class="edit-right">
                         <button class="cancel-btn" @click="showImgForm = false">取消</button>
@@ -314,4 +365,3 @@ function clickOpenEditForm(img_id) {
     </div>
 
 </template>
-

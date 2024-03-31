@@ -37,6 +37,12 @@ const inspirationService = {
     deleteFav(id) {
         const url = API.selectedFav.replace(':id', id)
         return request.delete(url)
+    },
+    updateInsFav(fav_id, ins_id, content, pre_fav_id) {
+        return request.put(API.FavIns, { fav_id, ins_id, content, pre_fav_id })
+    },
+    deleteInsFav(fav_id, ins_id) {
+        return request.post(API.FavInsBind, { fav_id, ins_id })
     }
 }
 

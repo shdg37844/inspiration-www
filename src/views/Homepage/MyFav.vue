@@ -98,6 +98,12 @@ async function handleSaveFavUpdate() {
 }
 
 async function handleDeleteFav() {
+    const isConfirmed = confirm("确认删除该收藏夹？");
+
+    if (!isConfirmed) {
+        return;
+    }
+
     const id = currentFavId.value
 
     try {

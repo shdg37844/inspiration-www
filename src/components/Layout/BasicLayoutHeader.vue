@@ -1,18 +1,41 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.js';
 import { PoweroffOutlined, DownOutlined } from '@ant-design/icons-vue'
-import Cookies from 'js-cookie';
+//import Cookies from 'js-cookie';
 import loginService from '@/services/login'
 import "@/assets/css/BasicLayoutHeader.css"
 
 const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
 const input = ref('')
-const showLoginForm = ref(false)
 const smsDisabled = ref(false)
 const smsText = ref('发送验证码')
-const TOKEN_KEY = 'web_token';
-const token = localStorage.getItem(TOKEN_KEY);
+
+const selectedKeys = computed(() => {
+  switch (route.path) {
+    case '/':
+      return ['1'];
+    case '/fav':
+      return ['2'];
+    default:
+      return [];
+  }
+});
+
+//const TOKEN_KEY = 'web_token';
+//const token = localStorage.getItem(TOKEN_KEY);
+
+onMounted(() => {
+  // 检查登录状态，如果未登录，则显示登录表单
+  const token = localStorage.getItem('web_token');
+  if (!token) {
+    authStore.toggleLoginForm(true);
+  }
+});
+
 
 const smsRules = {
   phone: [
@@ -77,9 +100,10 @@ async function handleSubmit() {
     if (response.code === 1) {
       alert('登录成功');
       let token = response.data.token;
-      Cookies.set(TOKEN_KEY, token, { expires: 1 });  // 将token保存到cookies中，有效期为1天
-      localStorage.setItem(TOKEN_KEY, token); // 保存Token到localStorage，页面刷新后也能从本地存储中恢复Token和权限信息，保持用户的登录状态和访问权限。
-      showLoginForm.value = false;
+      authStore.login(token);
+      //Cookies.set(TOKEN_KEY, token, { expires: 1 });  // 将token保存到cookies中，有效期为1天
+      //localStorage.setItem(TOKEN_KEY, token); // 保存Token到localStorage，页面刷新后也能从本地存储中恢复Token和权限信息，保持用户的登录状态和访问权限。
+      authStore.toggleLoginForm(false);
 
     } else {
       alert(response.message || '登录失败');
@@ -91,8 +115,9 @@ async function handleSubmit() {
 }
 
 const logout = () => {
-  localStorage.removeItem(TOKEN_KEY)
-  Cookies.remove(TOKEN_KEY)
+  authStore.logout();
+  //localStorage.removeItem(TOKEN_KEY)
+  //Cookies.remove(TOKEN_KEY)
 }
 
 </script>
@@ -127,7 +152,7 @@ const logout = () => {
           <a-menu-item key="2" @click="$router.push('/fav')">收藏夹</a-menu-item>
         </a-menu>
       </div>
-      <el-dropdown style="height: 100%" v-if="token">
+      <el-dropdown style="height: 100%" v-if="authStore.isLoggedIn()">
         <div class="bar-info-container">
           <i class="userInfo-avatar"></i>
           <span class="userInfo-name">ws</span>
@@ -141,13 +166,13 @@ const logout = () => {
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <button class="login-btn" v-else @click="showLoginForm = true">
+      <button class="login-btn" v-else @click="authStore.toggleLoginForm(true);">
         <span>登录/注册</span>
       </button>
     </div>
   </div>
 
-  <div class="login-mask" v-if="showLoginForm">
+  <div class="login-mask" v-if="authStore.showLoginForm">
     <div class="login-content">
       <div class="login-content-logo">
         <svg xmlns="http://www.w3.org/2000/svg" width="116" height="40" viewBox="0 0 116 40" fill="none">
@@ -195,7 +220,6 @@ const logout = () => {
           </defs>
         </svg>
       </div>
-
       <div class="form-container">
         <div class="login-form-phone">
           <el-form :model="formData" :rules="smsRules">
@@ -212,11 +236,17 @@ const logout = () => {
               </el-col>
             </el-form-item>
             <el-form-item>
-              <el-button style="width: 100%" type="primary" @click="handleSubmit">登录</el-button>
+              <el-button class="login-icon" style="width: 100%" type="primary" @click="handleSubmit">登录</el-button>
             </el-form-item>
           </el-form>
         </div>
       </div>
+      <svg class="close-icon" @click="authStore.toggleLoginForm(false)" t="1711962523722" viewBox="0 0 1024 1024"
+        version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1736" width="32" height="32">
+        <path
+          d="M512 160a352 352 0 1 1 0 704 352 352 0 0 1 0-704z m0 64a288 288 0 1 0 0 576 288 288 0 0 0 0-576z m-45.248 197.504l45.184 45.312 45.312-45.312a32 32 0 1 1 45.248 45.248L557.184 512l45.312 45.184a32 32 0 1 1-45.248 45.248L512 557.312l-45.184 45.184a32 32 0 1 1-45.248-45.248l45.184-45.184-45.184-45.312a32 32 0 1 1 45.248-45.248z"
+          fill="#8a8a8a" p-id="1737"></path>
+      </svg>
     </div>
   </div>
 </template>

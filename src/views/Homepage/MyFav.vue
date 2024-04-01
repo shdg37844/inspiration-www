@@ -53,7 +53,8 @@ async function handleAddFav() {
         })
         alert("创建成功！")
         showFavForm.value = false;
-
+        favText.value = '';
+        favTextarea.value = '';
     } catch (e) {
         console.error(e);
     }
@@ -112,7 +113,7 @@ async function handleDeleteFav() {
             alert("移除成功")
             showEditForm.value = false
             const index = favorites.value.findIndex(item => item.id === id)
-            favorites.value.splice(index,1)
+            favorites.value.splice(index, 1)
         }
 
     } catch (e) {

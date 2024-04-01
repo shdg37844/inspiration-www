@@ -90,6 +90,11 @@ async function handleSubmit() {
   }
 }
 
+const logout = () => {
+  localStorage.removeItem(TOKEN_KEY)
+  Cookies.remove(TOKEN_KEY)
+}
+
 </script>
 
 <template>
@@ -130,7 +135,7 @@ async function handleSubmit() {
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>
+            <el-dropdown-item @click="logout()">
               <PoweroffOutlined :style="{ marginRight: '4px' }" /> 退出
             </el-dropdown-item>
           </el-dropdown-menu>

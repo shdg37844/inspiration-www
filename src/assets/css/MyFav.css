@@ -2,7 +2,6 @@
     width: 1230px;
     margin: 0 auto;
 
-
     .fav-header {
         display: flex;
         justify-content: space-between;
@@ -54,7 +53,6 @@
         display: flex;
         gap: 20px;
         flex-wrap: wrap;
-
 
         .favorite-item-container {
 

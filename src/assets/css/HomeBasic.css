@@ -114,6 +114,18 @@
 
     }
 
+    .nopic-box {
+        position: relative;
+        top: 25%;
+        left: 35%;
+        transform: translateX(-35%);
+
+        .nopic-icon {
+            width: 81px;
+            height: 81px;
+        }
+    }
+
     .collect-mask {
         position: fixed;
         inset: 0;
@@ -133,6 +145,7 @@
             height: 470px;
             padding: 20px 20px;
             background: #FFF;
+            overflow-y: auto;
 
             .title {
                 margin-bottom: 20px;

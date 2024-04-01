@@ -131,7 +131,7 @@ function handleGetClassifyImgs(id) {
             </div>
         </div>
 
-        <div class="body-content-box">
+        <div class="body-content-box" v-if="pics.length > 0">
             <div class="pic-box" v-for="image in pics" :key="image.id">
                 <div class="pic-container">
                     <div class="overlay"></div>
@@ -153,9 +153,12 @@ function handleGetClassifyImgs(id) {
                         </svg>
                         <span class="favorite-text">已收藏</span>
                     </div>
-
-
                 </div>
+            </div>
+        </div>
+        <div v-else class="nopic-box">
+            <div class="nopic-icon">
+                <img src="./../../assets/images/blank.png" alt="No Pics">
             </div>
         </div>
 
